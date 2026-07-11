@@ -1,0 +1,7 @@
+# Moto props
+get_prop(rild, vendor_mot_prop)
+
+set_prop(rild, vendor_mtk_radio_prop)
+
+# /proc/bootinfo
+r_dir_file(rild, vendor_proc_hw)

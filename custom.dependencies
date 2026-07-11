@@ -1,0 +1,26 @@
+[
+  {
+    "repository": "PixelOS-Devices/android_device_motorola_cancunf-kernel",
+    "target_path": "device/motorola/cancunf-kernel"
+  },
+  {
+    "remote": "gitlab",
+    "repository": "NoPrincessHere/proprietary_vendor_motorola_cancunf",
+    "target_path": "vendor/motorola/cancunf"
+  },
+  {
+    "repository": "YAAP/hardware_mediatek",
+    "target_path": "hardware/mediatek",
+    "branch": "sixteen"
+  },
+  {
+    "repository": "YAAP/device_mediatek_sepolicy_vndr",
+    "target_path": "device/mediatek/sepolicy_vndr",
+    "branch": "sixteen"
+  },
+  {
+    "repository": "cyberknight777/android_packages_apps_DisplayFeatures",
+    "target_path": "packages/apps/DisplayFeatures",
+    "branch": "master"
+  }
+]

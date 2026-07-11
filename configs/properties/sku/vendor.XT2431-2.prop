@@ -1,0 +1,6 @@
+#
+# XT2431-2 variant specific props
+#
+
+ro.soc.manufacturer=Mediatek
+ro.soc.model=MT6855V/ATZA
