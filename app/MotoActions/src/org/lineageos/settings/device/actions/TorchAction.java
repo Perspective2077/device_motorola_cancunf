@@ -34,7 +34,7 @@ public class TorchAction implements SensorAction {
     private final Vibrator mVibrator;
 
     private String mRearCameraId;
-
+    private boolean mHasAdjustableLevels;
     private int mCurLevel;
 
     private SharedPreferences mPrefs;
@@ -54,6 +54,9 @@ public class TorchAction implements SensorAction {
                 int cOrientation = characteristics.get(CameraCharacteristics.LENS_FACING);
                 if (cOrientation == CameraCharacteristics.LENS_FACING_BACK) {
                     mRearCameraId = cameraId;
+                    Integer maxLevel = characteristics.get(
+                    CameraCharacteristics.FLASH_INFO_STRENGTH_MAXIMUM_LEVEL);  
+                    mHasAdjustableLevels = maxLevel != null && maxLevel > 1;           
                     break;
                 }
             }
@@ -66,8 +69,13 @@ public class TorchAction implements SensorAction {
         mVibrator.vibrate(VibrationEffect.createOneShot(250, VibrationEffect.DEFAULT_AMPLITUDE));
         if (mRearCameraId != null) {
             try {
-                if (mTorchEnabled) mCameraManager.setTorchMode(mRearCameraId, !mTorchEnabled);
-                else mCameraManager.turnOnTorchWithStrengthLevel(mRearCameraId, mCurLevel);
+                  if (mTorchEnabled) {
+                    mCameraManager.setTorchMode(mRearCameraId, !mTorchEnabled);
+                  } else if (mHasAdjustableLevels) {
+                    mCameraManager.turnOnTorchWithStrengthLevel(mRearCameraId, mCurLevel);
+                  } else {
+                    mCameraManager.setTorchMode(mRearCameraId, true);   // fallback, no strength control
+                  }
                 mTorchEnabled = !mTorchEnabled;
             } catch (CameraAccessException ignored) {
             }
