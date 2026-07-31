@@ -7,11 +7,11 @@ TARGET_SUPPORTS_OMX_SERVICE := false
 # Inherit from device makefile.
 $(call inherit-product, device/motorola/cancunf/device.mk)
 
-# Inherit some common LINEAGE stuff.
-$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
+# Inherit some common halcyon stuff.
+$(call inherit-product, vendor/halcyon/config/common.mk)
 TARGET_SCREEN_WIDTH := 1080
 
-PRODUCT_NAME := lineage_cancunf
+PRODUCT_NAME := halcyon_cancunf
 PRODUCT_DEVICE := cancunf
 PRODUCT_MANUFACTURER := motorola
 PRODUCT_BRAND := motorola
