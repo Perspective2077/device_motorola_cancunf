@@ -27,7 +27,6 @@ import android.os.PowerManager;
 import android.os.UEventObserver;
 import android.util.Log;
 
-import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 
 import org.lineageos.settings.device.actions.ChopChopSensor;
@@ -40,7 +39,6 @@ import org.lineageos.settings.device.doze.FlatUpSensor;
 import org.lineageos.settings.device.doze.ScreenStateNotifier;
 import org.lineageos.settings.device.doze.StowSensor;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -125,7 +123,7 @@ public class MotoActionsService extends Service implements ScreenStateNotifier,
 
         String currentValue;
 
-        if (CHARGE_CURRENT_FILE == PRIMARY_CHARGE_CURRENT_FILE) {
+        if (PRIMARY_CHARGE_CURRENT_FILE.equals(CHARGE_CURRENT_FILE)){
                 currentValue = PreferenceManager.getDefaultSharedPreferences(this).getString("turbo_current", "5000000");
         } else {
             currentValue = "3000000";
@@ -136,15 +134,16 @@ public class MotoActionsService extends Service implements ScreenStateNotifier,
         }
         Log.i(TAG, "currentValue="+currentValue);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(CHARGE_CURRENT_FILE))) {
-            Integer.parseInt(currentValue);
-            writer.write(currentValue);
-            Log.i(TAG, "Updated Charging current");
-        } catch (NumberFormatException e) {
-            Log.e(TAG, "Invalid charge current value: " + currentValue, e);
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to update charge current", e);
-        }
+        final String finalCurrentValue = currentValue;
+        new Thread(() -> {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(CHARGE_CURRENT_FILE))) {
+                Integer.parseInt(finalCurrentValue);
+                writer.write(finalCurrentValue);
+                Log.i(TAG, "Updated Charging current");
+            } catch (NumberFormatException | IOException e) {
+                Log.e(TAG, "Failed to update charge current", e);
+            }
+        }).start();
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -159,7 +158,7 @@ public class MotoActionsService extends Service implements ScreenStateNotifier,
     @Override
     public void screenTurnedOn() {
         if (!mWakeLock.isHeld()) {
-            mWakeLock.acquire();
+            mWakeLock.acquire(3000L);
         }
         for (ScreenStateNotifier screenStateNotifier : mScreenStateNotifiers) {
             screenStateNotifier.screenTurnedOn();
@@ -187,9 +186,37 @@ public class MotoActionsService extends Service implements ScreenStateNotifier,
         }
     }
 
+    @Override
+    public void onDestroy() {
+        if (mScreenStateReceiver != null) {
+            try {
+                unregisterReceiver(mScreenStateReceiver);
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, "ScreenStateReceiver already unregistered", e);
+            }
+        }
+
+        if (mObserver != null) {
+            mObserver.stopObserving();
+            mObserver = null;
+        }
+
+        if (mWakeLock != null && mWakeLock.isHeld()) {
+            mWakeLock.release();
+            mWakeLock = null;
+        }
+
+        screenTurnedOff();
+        mScreenStateNotifiers.clear();
+        mUpdatedStateNotifiers.clear();
+
+        super.onDestroy();
+    }
+
     private final BroadcastReceiver mScreenStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (intent == null || intent.getAction() == null) return;
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 screenTurnedOff();
             } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
