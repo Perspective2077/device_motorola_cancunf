@@ -50,7 +50,6 @@ import android.view.KeyEvent;
 
 import com.android.internal.os.DeviceKeyHandler;
 import org.lineageos.settings.device.Constants;
-import android.provider.Settings;
 
 import java.util.List;
 
@@ -61,6 +60,7 @@ public class TouchKeyHandler implements DeviceKeyHandler {
     private static final String GESTURE_WAKEUP_REASON = "singletap-gesture-wakeup";
     private static final String PULSE_ACTION = "com.android.systemui.doze.pulse";
     private static final int GESTURE_REQUEST = 0;
+    private static final int GESTURE_WAKELOCK_DURATION = 3000;
 
     private final Context mContext;
     private final AudioManager mAudioManager;
@@ -107,6 +107,7 @@ public class TouchKeyHandler implements DeviceKeyHandler {
         mEventHandler = new EventHandler();
 
         mCameraManager = mContext.getSystemService(CameraManager.class);
+        mRearCameraId = getRearCameraId();
         mCameraManager.registerTorchCallback(new TorchModeCallback(), mEventHandler);
 
         mVibrator = context.getSystemService(Vibrator.class);
@@ -123,6 +124,10 @@ public class TouchKeyHandler implements DeviceKeyHandler {
     private class TorchModeCallback extends CameraManager.TorchCallback {
         @Override
         public void onTorchModeChanged(String cameraId, boolean enabled) {
+            if (mRearCameraId == null) {
+             getRearCameraId();
+            }
+            
             if (!cameraId.equals(mRearCameraId)) return;
             mTorchEnabled = enabled;
         }
@@ -162,7 +167,7 @@ public class TouchKeyHandler implements DeviceKeyHandler {
     }
 
     private void processEvent(final int action) {
-        mProximityWakeLock.acquire();
+        mProximityWakeLock.acquire(2000);
         mSensorManager.registerListener(new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
@@ -249,6 +254,7 @@ public class TouchKeyHandler implements DeviceKeyHandler {
     }
 
     private void launchCamera() {
+        mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
         final Intent intent = new Intent(android.content.Intent.ACTION_SCREEN_CAMERA_GESTURE);
         mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT,
                 Manifest.permission.STATUS_BAR_SERVICE);
