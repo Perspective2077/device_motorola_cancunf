@@ -18,7 +18,6 @@
     <Settings>
         <Variant name="slow-cpu" enabled="false"/>
     </Settings>
-    <!-- <Include href="media_codecs_dolby_audio.xml" /> -->
     <Decoders>
         <MediaCodec name="c2.mtk.hevc.decoder" type="video/hevc" >
             <Alias name="OMX.MTK.VIDEO.DECODER.HEVC" />

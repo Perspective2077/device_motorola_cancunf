@@ -1,5 +1,5 @@
 #
-# SPDX-FileCopyrightText: PixelOS
+# SPDX-FileCopyrightText: LineageOs
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -180,6 +180,7 @@ BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 2
 
 # Inherit the proprietary files
 include vendor/motorola/cancunf/BoardConfigVendor.mk
+include vendor/motorola/cancunf-motcamera/BoardConfigVendor.mk
 
 # Wifi
 BOARD_WLAN_DEVICE := MediaTek

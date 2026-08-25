@@ -1,5 +1,5 @@
 #
-# SPDX-FileCopyrightText: PixelOS
+# SPDX-FileCopyrightText: LineageOs
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,14 +12,11 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 # Inherit virtual_ab_ota product
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch_with_vendor_ramdisk.mk)
 
-# dolby 
-# $(call inherit-product, hardware/dolby/dolby.mk)
+# FUCK MATLOG
+TARGET_DISABLE_MATLOG := true
 
 # Add vendor log tags
 include $(DEVICE_PATH)/configs/properties/vendor_log_tags.mk
-
-# FUCK MATLOG
-TARGET_DISABLE_MATLOG := true
 
 # A/B
 PRODUCT_PACKAGES += \
@@ -119,6 +116,10 @@ PRODUCT_PACKAGES += \
 # DisplayFeatures
 PRODUCT_PACKAGES += \
     DisplayFeatures
+
+# RefreshRate
+$(call soong_config_set,surfaceflinger,frame_rate_category_high,120)
+$(call soong_config_set,surfaceflinger,frame_rate_category_min,30)
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -455,3 +456,4 @@ PRODUCT_COPY_FILES += \
 
 # Inherit the proprietary files
 $(call inherit-product, vendor/motorola/cancunf/cancunf-vendor.mk)
+$(call inherit-product, vendor/motorola/cancunf-motcamera/cancunf-motcamera-vendor.mk)

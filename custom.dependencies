@@ -9,6 +9,11 @@
     "target_path": "vendor/motorola/cancunf"
   },
   {
+    "repository": "YAAP/vendor_motorola_cancunf-motcamera",
+    "target_path": "vendor/motorola/cancunf-motcamera",
+    "branch": "sixteen"
+  },
+  {
     "repository": "YAAP/hardware_mediatek",
     "target_path": "hardware/mediatek",
     "branch": "sixteen"
