@@ -13,7 +13,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch_with_vendor_ramdisk.mk)
 
 # dolby 
-# $(call inherit-product, hardware/dolby/dolby.mk)
+$(call inherit-product, hardware/dolby/dolby.mk)
 
 # Add vendor log tags
 include $(DEVICE_PATH)/configs/properties/vendor_log_tags.mk
