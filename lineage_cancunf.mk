@@ -12,11 +12,11 @@ TARGET_SUPPORTS_OMX_SERVICE := false
 # Inherit from device makefile.
 $(call inherit-product, device/motorola/cancunf/device.mk)
 
-# Inherit some common PixelOS stuff.
-$(call inherit-product, vendor/custom/config/common_full_phone.mk)
+# Inherit some common lineageOs stuff.
+$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 TARGET_SCREEN_WIDTH := 1080
 
-PRODUCT_NAME := custom_cancunf
+PRODUCT_NAME := lineage_cancunf
 PRODUCT_DEVICE := cancunf
 PRODUCT_MANUFACTURER := motorola
 PRODUCT_BRAND := motorola
