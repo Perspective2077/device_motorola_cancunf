@@ -107,6 +107,7 @@ public class TouchKeyHandler implements DeviceKeyHandler {
         mEventHandler = new EventHandler();
 
         mCameraManager = mContext.getSystemService(CameraManager.class);
+        mRearCameraId = getRearCameraId();
         mCameraManager.registerTorchCallback(new TorchModeCallback(), mEventHandler);
 
         mVibrator = context.getSystemService(Vibrator.class);
