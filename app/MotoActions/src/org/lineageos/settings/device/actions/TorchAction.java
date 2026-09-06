@@ -78,6 +78,9 @@ public class TorchAction implements SensorAction {
 
         @Override
         public void onTorchModeChanged(String cameraId, boolean enabled) {
+            if (mRearCameraId == null) {
+                getRearCameraId();
+            }
             if (!cameraId.equals(mRearCameraId)) {
                 return;
             }
